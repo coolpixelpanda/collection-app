@@ -8,17 +8,14 @@ interface Params {
   view: string;
 }
 
-interface CollectionViewProps {
-  params: Params;
-}
-
-const CollectionView = ({ params }: CollectionViewProps) => {
-  const { view } = params;
+const CollectionView = async ({ params }: { params: Promise<Params> }) => {
+  const resolvedParams = await params; // Resolve the params Promise
+  const { view } = resolvedParams;
 
   if (view === "grid") return <CollectionGrid collections={collections} />;
   if (view === "list") return <CollectionList collections={collections} />;
   if (view === "table") return <CollectionTable collections={collections} />;
-  
+
   return notFound();
 };
 
