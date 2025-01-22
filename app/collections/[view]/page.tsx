@@ -5,20 +5,21 @@ import { CollectionList } from "../../../components/CollectionList";
 import { CollectionTable } from "../../../components/CollectionTable";
 
 interface Params {
-  view: "grid" | "list" | "table"; // Limit the view to these string literals
+  view: string;
 }
 
 interface CollectionViewProps {
-  params: Params; // Add the Params type here
+  params: Params;
 }
 
-const CollectionView: React.FC<CollectionViewProps> = ({ params }) => {
+const CollectionView = ({ params }: CollectionViewProps) => {
   const { view } = params;
 
   if (view === "grid") return <CollectionGrid collections={collections} />;
   if (view === "list") return <CollectionList collections={collections} />;
   if (view === "table") return <CollectionTable collections={collections} />;
-  return notFound(); // Return 404 for invalid views
+  
+  return notFound();
 };
 
 export default CollectionView;
