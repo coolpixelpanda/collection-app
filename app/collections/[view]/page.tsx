@@ -1,46 +1,24 @@
-import { GetStaticPaths, GetStaticProps } from "next";
+import { notFound } from "next/navigation";
+import { collections } from "../../../data/collections";
+import { CollectionGrid } from "../../../components/CollectionGrid";
+import { CollectionList } from "../../../components/CollectionList";
+import { CollectionTable } from "../../../components/CollectionTable";
 
-interface PageProps {
-  view: string; // Expecting the `view` parameter directly
+interface Params {
+  view: "grid" | "list" | "table"; // Limit the view to these string literals
 }
 
-export default function ViewPage({ view }: PageProps) {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold">Current View: {view}</h1>
-      <p className="text-gray-600">
-        This page dynamically renders content based on the view: Grid, List, or Table.
-      </p>
-    </div>
-  );
+interface CollectionViewProps {
+  params: Params; // Add the Params type here
 }
 
-// Generate static paths for dynamic routes
-export const getStaticPaths: GetStaticPaths = async () => {
-  return {
-    paths: [
-      { params: { view: "Grid" } },
-      { params: { view: "List" } },
-      { params: { view: "Table" } },
-    ],
-    fallback: false, // Only these paths will be available
-  };
+const CollectionView: React.FC<CollectionViewProps> = ({ params }) => {
+  const { view } = params;
+
+  if (view === "grid") return <CollectionGrid collections={collections} />;
+  if (view === "list") return <CollectionList collections={collections} />;
+  if (view === "table") return <CollectionTable collections={collections} />;
+  return notFound(); // Return 404 for invalid views
 };
 
-// Fetch the data for the page based on the `view` parameter
-export const getStaticProps: GetStaticProps<PageProps> = async (context) => {
-  const { view } = context.params as { view: string };
-
-  // Validate or handle invalid views
-  if (!["Grid", "List", "Table"].includes(view)) {
-    return {
-      notFound: true,
-    };
-  }
-
-  return {
-    props: {
-      view, // Pass `view` as a prop to the page
-    },
-  };
-};
+export default CollectionView;
